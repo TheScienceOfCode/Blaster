@@ -1,9 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
+import renderer from 'react-test-renderer'
+import MockRouter from 'react-mock-router';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
-});
+window.matchMedia = window.matchMedia || function() {
+    return {
+        matches : false,
+        addListener : function() {},
+        removeListener: function() {}
+    };
+};
+
+
+const location = { pathname: 'test' };
+describe('app renders', () => {
+    it('renders correctly', () => {
+      const tree = renderer
+        .create(<MockRouter location={location}><App /></MockRouter>)
+        .toJSON();
+      expect(tree).toMatchSnapshot();
+    });
+  });
